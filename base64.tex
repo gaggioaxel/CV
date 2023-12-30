@@ -1,0 +1,88 @@
+\ExplSyntaxOn
+\NewExpandableDocumentCommand \BaseEncode { m }
+  { \zeeshan_base_encode:n {#1} }
+\NewExpandableDocumentCommand \BaseDecode { m }
+  { \zeeshan_base_decode:n {#1} }
+\cs_new:Npn \zeeshan_base_encode:n #1
+  {
+    \exp_args:Ne \__zeeshan_base_encode_bin:n
+      { \str_map_function:nN {#1} \__zeeshan_base_char_to_bin:n }
+  }
+\cs_new:Npn \__zeeshan_base_char_to_bin:n #1
+  { \exp_args:Nf \__zeeshan_base_char_to_bin_pad:nn { \int_to_bin:n { `#1 } } { 8 } }
+\cs_new:Npn \__zeeshan_base_char_to_bin_pad:nn #1 #2
+  { \prg_replicate:nn { #2 - \str_count:n {#1} } { 0 } #1 }
+\cs_new:Npn \__zeeshan_base_encode_bin:n #1
+  { \__zeeshan_base_encode_bin:w #1 222222 \q_stop }
+\cs_new:Npn \__zeeshan_base_encode_bin:w #1#2#3#4#5#6
+  { \__zeeshan_base_encode_bin_aux:w #1#2#3#4#5#6 2 \q_nil }
+\cs_new:Npn \__zeeshan_base_encode_bin_aux:w #1 2 #2 \q_nil
+  {
+    \tl_if_empty:nTF {#2}
+      { \exp_args:Nf \__zeeshan_base_encode_lookup:n { \int_from_bin:n {#1} } }
+      {
+        \tl_if_empty:nT {#1} { \use_none_delimit_by_q_stop:w }
+        \exp_args:Nf \__zeeshan_base_encode_lookup:n
+          {
+            \exp_args:Ne \int_from_bin:n
+              { #1 \prg_replicate:nn { \str_count:n {#2} } { 0 } }
+          }
+        \int_compare:nNnTF { \str_count:n {#2} } = { 2 } { = } { == }
+        \use_none_delimit_by_q_stop:w
+      }
+    \__zeeshan_base_encode_bin:w
+  }
+\cs_new:Npn \__zeeshan_base_encode_lookup:n #1
+  {
+    \if_int_compare:w #1 < 26 ~
+      \char_generate:nn { #1 + `A } { 12 }
+    \else:
+      \if_int_compare:w #1 < 52 ~
+        \char_generate:nn { #1 + `a - 26 } { 12 }
+      \else:
+        \if_int_compare:w #1 < 62 ~
+          \char_generate:nn { #1 + `0 - 52 } { 12 }
+        \else:
+          \if_int_compare:w #1 = 62 ~ + \else: / \fi:
+        \fi:
+      \fi:
+    \fi:
+  }
+%
+\cs_new:Npn \zeeshan_base_decode:n #1
+  {
+    \exp_args:Ne \__zeeshan_base_decode_bin:n
+      { \str_map_function:nN {#1} \__zeeshan_base_to_bin:n }
+  }
+\cs_new:Npn \__zeeshan_base_to_bin:n #1
+  {
+    \exp_args:Ne \__zeeshan_base_char_to_bin_pad:nn
+      { \__zeeshan_base_to_bin_lookup:n {#1} } { 6 }
+  }
+\cs_new:Npn \__zeeshan_base_to_bin_lookup:n #1
+  {
+    \if_int_compare:w `#1 > 47 ~
+      \if_int_compare:w `#1 > 64 ~
+        \int_to_bin:n { `#1 - \if_int_compare:w `#1 > 96 ~ 71 \else: 65 \fi: }
+      \else:
+        \if_int_compare:w `#1 = 61 ~ 222222
+        \else: \int_to_bin:n { `#1 + 4 }
+        \fi:
+      \fi:
+    \else: 11111 \if_int_compare:w `#1 = 43 ~ 0 \else: 1 \fi:
+    \fi:
+  }
+\cs_new:Npn \__zeeshan_base_decode_bin:n #1
+  { \__zeeshan_base_decode_bin:w #1 2222 2222 \q_stop }
+\cs_new:Npn \__zeeshan_base_decode_bin:w #1#2#3#4#5#6#7#8
+  { \__zeeshan_base_decode_bin_aux:w #1#2#3#4#5#6#7#8 2 \q_nil }
+\cs_new:Npn \__zeeshan_base_decode_bin_aux:w #1 2 #2 \q_nil
+  {
+    \tl_if_empty:nTF {#2}
+      { \exp_args:Nf \__zeeshan_base_output_decoded:n { \int_from_bin:n {#1} } }
+      { \use_none_delimit_by_q_stop:w }
+    \__zeeshan_base_decode_bin:w
+  }
+\cs_new:Npn \__zeeshan_base_output_decoded:n #1
+  { \int_compare:nNnTF {#1} = { 32 } { ~ } { \char_generate:nn {#1} { 12 } } }
+\ExplSyntaxOff

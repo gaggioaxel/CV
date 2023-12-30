@@ -1,0 +1,201 @@
+% !TeX spellcheck = en_GB
+% !TeX program = pdflatex
+%
+% LetzCV-sleek 1.0 LaTeX template
+% Author: Andreï V. Kostyrka, University of Luxembourg
+%
+% This template fills the gap in the available variety of templates
+% by proposing something that is not a custom class, not using any
+% hard-coded settings deeply hidden in style files, and provides
+% a handful of custom command definitions that are as transparent as it gets.
+% Developed at the University of Luxembourg.
+%
+% *NOTHING IS HARCODED, and never should be.*
+%
+% Target audience: applicants in the IT industry, or business in general
+%
+% The main strength of this template is, it explicitly showcases how
+% to break the flow of text to achieve the most flexible right alignment
+% of dates for multiple configurations.
+
+\documentclass[11pt, a4paper]{article} 
+
+\usepackage[T1]{fontenc}     % We are using pdfLaTeX,
+\usepackage[utf8]{inputenc}  % hence this preparation
+\usepackage[italian]{babel}  
+\usepackage[left = 0mm, right = 0mm, top = 0mm, bottom = 0mm]{geometry}
+\usepackage[stretch = 25, shrink = 25]{microtype}  
+\usepackage{graphicx}        % To insert pictures
+\usepackage{xcolor}          % To add colour to the document
+\usepackage{marvosym}        % Provides icons for the contact details
+\usepackage{fontawesome}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tikz}
+\input{base64}
+
+\usepackage{enumitem}        % To redefine spacing in lists
+\setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 6mm}
+
+\usepackage{FiraSans}        % Change this to use any font, but keep it simple
+\renewcommand{\familydefault}{\sfdefault}
+
+\definecolor{cvblue}{HTML}{304263}
+
+
+%%%%%%% USER COMMAND DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%
+% These are the real workhorses of this template
+\newcommand{\dates}[1]{\hfill\mbox{\textbf{#1}}} % Bold stuff that doesn’t got broken into lines
+\newcommand{\itemspacing}{\par\vskip.5ex plus .4ex} % Item spacing
+\newcommand{\smaller}[1]{{\small$\diamond$\ #1}}
+\newcommand{\headleft}[1]{\vspace*{2.7ex}\textsc{\textbf{#1}}\par%
+    \vspace*{-1.5ex}\hrulefill\par\vspace*{0.7ex}}
+\newcommand{\headright}[1]{\vspace*{2.5ex}\textsc{\Large\color{cvblue}#1}\par%
+     \vspace*{-2ex}{\color{cvblue}\hrulefill}\par}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[colorlinks = true, urlcolor = white, linkcolor = white]{hyperref}
+
+\begin{document}
+
+% Style definitions -- killing the unnecessary space and adding the skips explicitly
+\setlength{\topskip}{0.1pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\fboxsep}{0pt}
+\pagestyle{empty}
+\raggedbottom
+
+\begin{minipage}[t]{0.34\textwidth} %% Left column -- outer definition
+%  Left column -- top dark rectangle
+\colorbox{cvblue}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
+
+\vspace{-.2ex} % Eliminates the small gap
+\colorbox{cvblue!90}{\color{white}  %% LEFT BOX
+\kern0.09\textwidth\relax% Left margin provided explicitly
+\begin{minipage}[t][293mm][t]{0.82\textwidth}
+\raggedright
+\vspace*{2ex}
+
+\centering \Large Gabriele \textbf{\textsc{Romano}} \normalsize 
+
+% Centering without extra vertical spacing
+\vspace*{2ex}
+\begin{tikzpicture}
+    \clip (0,0) circle (2.8cm); % Adjust the circle size as needed
+    \node at (0,0) {\includegraphics[width=0.99\textwidth]{photo.jpeg}}; % Adjust the image dimensions
+\end{tikzpicture}
+%\makebox[0pt][c]{\resizebox{4.4cm}{!}{\includegraphics{photo.jpeg}}}
+%\null\hfill\includegraphics[width=0.65\textwidth]{photo.jpeg}\hfill\null
+
+\headleft{Profilo}
+Entusiasta ed appassionato \textbf{ingegnere informatico} specializzato in \textbf{intelligenza artificiale} e \textbf{interazione uomo-macchina}. %
+Determinato ad esplorare nuove tecnologie e metodologie in aggiunta ad una forte volontà di ottenere risultati che non solo soddisfino i requisiti tecnici, ma che offrano anche un valore tangibile agli utenti finali. %
+Credo che il connubio tra curiosità, impegno e ricerca della perfezione sia fondamentale per sviluppare soluzioni all'avanguardia che migliorino la vita delle persone. %
+Sono dotato di una solida base accademica fatta di aspetti teorici e collaborazione proattiva in gruppi di sviluppo. %
+
+\headleft{Skills}
+\begin{itemize}
+    \item Python, C, C\#, Java, Javascript, Matlab
+    \item CSS, html, \LaTeX
+    \item SQL, MongoDB
+\end{itemize} 
+
+\headleft{Lingue}
+\renewcommand{\arraystretch}{1.2} % Adjust the value as needed
+\begin{tabular}{>{\centering\arraybackslash}m{3em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em}}
+    \multicolumn{1}{c}{\faLanguage} & \multicolumn{1}{c}{\faBook} & \multicolumn{1}{c}{\faPencil} & \multicolumn{1}{c}{\faMicrophone} & \multicolumn{1}{c}{\faHeadphones} \\
+    \textbf{English} & C1 & B2 & B2 & B2 \\
+    \textbf{Italiano} & \multicolumn{4}{c}{\centering madrelingua} \\
+    %\cline{1-1}\cline{2-4}
+\end{tabular}
+Cittadinanza: \textbf{Italiana} \\[0.1ex]
+
+\headleft{Informazioni Personali}
+\small % To fit more content
+\faBirthdayCake\ 12 - 12 - 1997 \\
+\MVAt\ {\small \href{mailto:\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}{\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}} \\[0.4ex]
+\faPhone\ \BaseDecode{KzM5IDMyOCAyOTEgMzMyNg==} \\[0.5ex]
+\faGithub\ \href{https://github.com/gaggioaxel}{github.com/gaggioaxel} \\[0.1ex]
+\faLinkedinSquare\ \href{https://it.linkedin.com/in/gabriele-romano-078083219}{linkedin.com/gabriele-romano} \\[0.1ex]
+\faEnvelope\ Via delle Galle 73, Cogorno (GE)
+\normalsize
+
+\end{minipage}%
+\kern0.09\textwidth%%Right margin provided explicitly to stretch the colourbox
+}
+\end{minipage}% Right column
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   RIGHT SIDE
+%
+\hskip2.2em% Left margin for the white area
+%
+%
+%
+\begin{minipage}[t]{0.57\textwidth}
+\setlength{\parskip}{0.8ex}% Adds spaces between paragraphs; use \\ to add new lines without this space. Shrink this amount to fit more data vertically
+
+\vspace{2ex}
+
+\headright{Esperienze Universitarie}
+
+\textsc{Paper per Conferenza.} \textit{Università di Genova}  \dates{09.2023} \\
+\smaller{Ho collaborato nella creazione del paper intitolato \textit{"Improving output visualization of an algorithm for the automated detection of the perceived origin of movement"} %
+per la conferenza \href{https://intetain.eai-conferences.org/2023/}{\textcolor{black}{EAI INTETAIN 2023}} in prossima pubblicazione.}
+
+\itemspacing % Item spacing -- defined in the preamble
+\textsc{Borsa di Ricerca.} \textit{Università di Genova.} \dates{02/2023--06/2023} \\
+\smaller{ Titolo borsa: \textit{“Prerequisite learning from video lessons”}} \\
+\smaller{Collaborazione in una ricerca incentrata sullo sviluppo di un algoritmo di estrazione del testo presente in video con slide e %
+integrazione con un sistema di analisi semantica al fine di estrarre concetti prerequisiti per la comprensione del video su piattaforma online \href{http://edurell.dibris.unige.it:5000/}{\textcolor{black}{Edurell}}.}
+
+\headright{Formazione}
+
+\textsc{Laurea Magistrale.} \href{https://unige.it/}{\textcolor{black}{\textit{Università di Genova}}}. \dates{09.2021 -- 12.2023} \\
+Corso di \textit{Computer Engineering} \\
+Indirizzo \textit{Artificial Intelligence and Human-centered Computing}
+
+\smaller{Voto finale} 110/110. \\
+\smaller{Titolo Tesi}: "\textit{A comparative analysis across algorithmic, machine learning, and visual paradigms for the automatic detection of the perceived origin of full-body human movement}" \href{https://github.com/gaggioaxel/OoM-Thesis}{\textcolor{black}{\faExternalLink}} \\
+\smaller{Interessi principali: 
+    \begin{itemize}
+        \item Interazione tra sistemi multimodali, machine learning e analisi dati per la creazione di dataset, estrazione di features, addestramento e testing di un modello ad apprendimento in aggiunta ad aspetti di visualizzazione.
+        \item Trustworty AI per l'analisi sulle vulnerabilità dei modelli basati su intelligenza artificiale e gli aspetti legati alla privacy per quanto concerne i dati utilizzati per l'addestramento.
+        \item Interazione uomo-macchina per le interfacce e creazione di ontologie per il Web 3.0 e integrazione su database NoSQL.
+    \end{itemize}
+}
+
+\itemspacing
+\textsc{Laurea.} \textit{\href{https://www.polimi.it/}{\textcolor{black}{Politecnico di Milano}}}. \dates{09.2016 -- 09.2021} \\ Ingegneria Industriale e dell'Informazione. \\ 
+Indirizzo \textit{Informatica}. \\
+\smaller{Voto finale} 84/110. \\
+\smaller{Interessi principali e progetti finali: 
+    \begin{itemize}
+        \item Teoria della Complessità, linguaggi formali, strutture dati, algoritmi di ricerca e ordinamento. Progetto finale di algoritmi e strutture \href{https://www.polimi.it/}{\textcolor{black}{\faExternalLink TODO}}
+        \item Struttura interna dei calcolatori, paradigmi di programmazione parallela e concorrente. Descrizione architetture hardware tramite linguaggio VHDL e progetto finale.
+        \item Strutturazione, sviluppo, deployment e presentazione di progetto di gruppo con collaborazione tramite piattaforma di versioning.\\ Trasposizione digitale gioco da tavolo Santorini \href{https://github.com/gaggioaxel/SantoriniSchoolProj-Remake}{\textcolor{black}{ \faExternalLink\ }} della Roxley Games. 
+    \end{itemize}
+}
+
+\itemspacing
+\textsc{Maturità scientifica.} \href{https://www.liceomarconidelpino.it/}{\textcolor{black}{Liceo Scientifico Marconi-Delpino}}. \dates{2011 -- 2016} \\
+\smaller{Diploma con votazione 70/100.} \\
+\smaller{Tesina di presentazione: Analisi del film "Inside Out" \href{https://prezi.com/view/g7EqVksEAx6aKbOHdoOK/}{\textcolor{blue!0!black}{\faExternalLink\ }} della Disney\textsuperscript{\textcopyright} }\\
+
+\headright{Formazione aggiuntiva}
+
+\textsc{TOEIC.} \textit{Speaking and Writing} \dates{09.2021} \\
+\smaller{Certificato di proficiency B2 in Speaking e Writing}
+
+\itemspacing
+\textsc{TOEIC.} \textit{Reading and Listening} \dates{08.2021} \\
+\smaller{Certificato di proficiency C1 in Reading e B2 in Listening}
+
+
+%\headright{Hobbies}
+%\textit{Cinema:} Grande appassionato della filmografia di Woody Allen
+\end{minipage}
+
+\end{document}
