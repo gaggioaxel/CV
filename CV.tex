@@ -32,7 +32,34 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{tikz}
+\usepackage{ragged2e}
+\usepackage[inkscapeformat=png]{svg}
+\usepackage{ifthen}
 \input{base64}
+
+
+\usepackage{shellesc}
+\usepackage{environ}
+\newwrite\myexport
+
+\makeatletter
+\NewEnviron{translate}{%
+% step 2
+\toks@=\expandafter{\BODY}%
+\immediate\openout\myexport=totrans.tex
+\immediate\write\myexport{\the\toks@}
+\immediate\closeout\myexport
+% step 3
+\ShellEscape{sed -i -e 's/\\/\\\\/g' totrans.tex}
+% step 4
+\ShellEscape{trans -b -i totrans.tex -o translated.tex it:\targetlanguage}
+% step 5
+\input{translated.tex}
+% step 6: Delete temporary files
+%\AtEndDocument{\ShellEscape{rm -f totrans.tex translated.tex}}
+}
+\makeatother
+
 
 \usepackage{enumitem}        % To redefine spacing in lists
 \setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 6mm}
@@ -42,162 +69,305 @@
 
 \definecolor{cvblue}{HTML}{304263}
 
+\newboolean{english}
+\setboolean{english}{true}
+
+
+\newcommand{\targetlanguage}{en} % Set the default target language
+
+\newcommand{\insertprofile}{%
+  % Use an if-condition based on the boolean value
+  \ifthenelse{\boolean{english}}
+  {%
+  I am an enthusiastic and passionate \textbf{computer engineer} specialized in \textbf{artificial intelligence} and \textbf{human-computer interaction}. %
+  I think that the combination of curiosity, commitment, and continuous improvement is the way to go for developing solutions at the forefront of existing knowledge. %
+  I have a solid academic background, comprising theoretical aspects and proactive participation in development groups.\\ }%
+  {%
+  Sono un entusiasta ed appassionato \textbf{ingegnere informatico} specializzato in \textbf{intelligenza artificiale} e \textbf{interazione uomo-macchina}. \\%
+  Credo che il connubio tra curiosità, impegno e \\ costante miglioramento sia \\ il percorso migliore per lo sviluppo di soluzioni ai confini delle conoscenze esistenti. \\%
+  Sono dotato di una solida \\ base accademica fatta di aspetti teorici e partecipazione proattiva \\ in gruppi di sviluppo.%
+  }%
+}
+
+\newcommand{\polimi}{
+    \ifthenelse{\boolean{english}}{Polytechnic of Milan}{Politecnico di Milano}
+}
 
 %%%%%%% USER COMMAND DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These are the real workhorses of this template
 \newcommand{\dates}[1]{\hfill\mbox{\textbf{#1}}} % Bold stuff that doesn’t got broken into lines
-\newcommand{\itemspacing}{\par\vskip.5ex plus .4ex} % Item spacing
+\newcommand{\itemspacing}{\par\vskip.5ex plus .3ex} % Item spacing
+\newcommand{\itemorespacing}[1]{\par\vskip#1ex} % Item spacing
 \newcommand{\smaller}[1]{{\small$\diamond$\ #1}}
-\newcommand{\headleft}[1]{\vspace*{2.7ex}\textsc{\textbf{#1}}\par%
-    \vspace*{-1.5ex}\hrulefill\par\vspace*{0.7ex}}
-\newcommand{\headright}[1]{\vspace*{2.5ex}\textsc{\Large\color{cvblue}#1}\par%
-     \vspace*{-2ex}{\color{cvblue}\hrulefill}\par}
+\newcommand{\headleft}[1]{\vspace*{2ex}\textsc{\textbf{#1}}\par%
+    \vspace*{-1.5ex}\hrulefill\par\vspace*{0.5ex}}
+\newcommand{\headleftbelow}[1]{\vspace*{-0.5ex}\hrulefill\par\vspace*{0.5ex}%
+    \textsc{\textbf{#1}}}
+\newcommand{\headright}[1]{\vspace*{1.8ex}\textsc{\Large\color{cvblue}#1}\par%
+     \vspace*{-2.5ex}{\color{cvblue}\hrulefill}\par}
+\newcommand{\privacy}{\vspace*{0ex}\footnotesize{\textcolor{gray}{\ifthenelse{\boolean{english}}%
+{I authorize the processing of my personal data pursuant to Legislative Decree 196 of 30 June 2003 and art. 13 GDPR (EU Regulation 2016/679) for the purposes of personnel research and selection.}%
+{Autorizzo il trattamento dei miei dati personali presenti nel CV ai sensi dell’art. 13 d. lgs. 30 giugno 2003 n. 196 -
+“Codice in materia di protezione dei dati personali” e dell’art. 13 GDPR 679/16 - “Regolamento europeo sulla
+protezione dei dati personali”}}}\par}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[colorlinks = true, urlcolor = white, linkcolor = white]{hyperref}
 
 \begin{document}
 
-% Style definitions -- killing the unnecessary space and adding the skips explicitly
-\setlength{\topskip}{0.1pt}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0pt}
-\setlength{\fboxsep}{0pt}
-\pagestyle{empty}
-\raggedbottom
+    % Style definitions -- killing the unnecessary space and adding the skips explicitly
+    \setlength{\topskip}{0.1pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\fboxsep}{0pt}
+    \pagestyle{empty}
+    \raggedbottom
 
-\begin{minipage}[t]{0.34\textwidth} %% Left column -- outer definition
-%  Left column -- top dark rectangle
-\colorbox{cvblue}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
+    \begin{minipage}[t]{0.34\textwidth} %% Left column -- outer definition
+        %  Left column -- top dark rectangle
+        \colorbox{cvblue}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 
-\vspace{-.2ex} % Eliminates the small gap
-\colorbox{cvblue!90}{\color{white}  %% LEFT BOX
-\kern0.09\textwidth\relax% Left margin provided explicitly
-\begin{minipage}[t][293mm][t]{0.82\textwidth}
-\raggedright
-\vspace*{2ex}
+        \vspace{-.2ex} % Eliminates the small gap
+        \colorbox{cvblue!90}{\color{white}  %% LEFT BOX
+            \kern0.09\textwidth\relax% Left margin provided explicitly
+            \begin{minipage}[t][293mm][t]{0.82\textwidth}
+                \raggedright
+                \vspace*{2ex}
 
-\centering \Large Gabriele \textbf{\textsc{Romano}} \normalsize 
+                \centering \Large Gabriele \textbf{\textsc{Romano}} \normalsize \\%
+                12/12/1997
 
-% TODO Change the picture
-% Centering without extra vertical spacing
-\vspace*{2ex}
-\begin{tikzpicture}
-    \clip (0,0) circle (2.8cm); % Adjust the circle size as needed
-    \node at (0,0) {\includegraphics[width=0.99\textwidth]{photo.jpeg}}; % Adjust the image dimensions
-\end{tikzpicture}
-%\makebox[0pt][c]{\resizebox{4.4cm}{!}{\includegraphics{photo.jpeg}}}
-%\null\hfill\includegraphics[width=0.65\textwidth]{photo.jpeg}\hfill\null
+                % Centering without extra vertical spacing
+                \vspace*{1.5ex}
+                \begin{tikzpicture}
+                    \clip (0,0) circle (2.8cm); % Adjust the circle size as needed
+                    \node at (0,0) {\includegraphics[width=0.99\textwidth]{photo}}; % Adjust the image dimensions
+                \end{tikzpicture}
+                %\makebox[0pt][c]{\resizebox{4.4cm}{!}{\includegraphics{photo.jpeg}}}
+                %\null\hfill\includegraphics[width=0.65\textwidth]{photo.jpeg}\hfill\null
 
-\headleft{Profilo}
-Entusiasta ed appassionato \textbf{ingegnere informatico} specializzato in \textbf{intelligenza artificiale} e \textbf{interazione uomo-macchina}. %
-Determinato ad esplorare nuove tecnologie e metodologie in aggiunta ad una forte volontà di ottenere risultati che non solo soddisfino i requisiti tecnici, ma che offrano anche un valore tangibile agli utenti finali. %
-Credo che il connubio tra curiosità, impegno e ricerca della perfezione sia fondamentale per sviluppare soluzioni all'avanguardia che migliorino la vita delle persone. %
-Sono dotato di una solida base accademica fatta sia di aspetti teorici che di partecipazione proattiva in gruppi di sviluppo. %
+                \headleft{\begin{translate}Contatti\end{translate}}
+                \small % To fit more content
+                \MVAt\ {\small \href{mailto:\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}{\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}} \\[0.4ex] % Q2hlZXJzIE1hY2hpbmUhIEh1bWFucyB3b24ndCByZWFkIG15IGNvbnRhY3QgaW5mb3MhIQ==
+                \faPhone\ \BaseDecode{KzM5IDMyOCAyOTEgMzMyNg==} \\[0.5ex]
+                \faGithub\ \href{https://github.com/gaggioaxel}{github.com/gaggioaxel} \\[0.1ex]
+                \faLinkedinSquare\ \href{https://it.linkedin.com/in/gabriele-romano}{linkedin.com/gabriele-romano} \\[0.1ex]
+                \faEnvelope\ Via dei Sivori 10/1, Lavagna (GE)
+                \normalsize
 
-\headleft{Skills}
-\begin{itemize}
-    \item Python, C, C\#, Java, Javascript, Matlab
-    \item CSS, html, \LaTeX
-    \item SQL, MongoDB
-\end{itemize} 
+                \headleft{\begin{translate}Profilo\end{translate}}
+                %\vspace*{-2ex}
+                \raggedright%
+                %\setlength\parfillskip{0pt plus .4\textwidth}
+                %\setlength\emergencystretch{.1\textwidth}
+                \insertprofile
+                \centering
 
-\headleft{Lingue}
-\renewcommand{\arraystretch}{1.2} % Adjust the value as needed
-\begin{tabular}{>{\centering\arraybackslash}m{3em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em}}
-    \multicolumn{1}{c}{\faLanguage} & \multicolumn{1}{c}{\faBook} & \multicolumn{1}{c}{\faPencil} & \multicolumn{1}{c}{\faMicrophone} & \multicolumn{1}{c}{\faHeadphones} \\
-    \textbf{English} & C1 & B2 & B2 & B2 \\
-    \textbf{Italiano} & \multicolumn{4}{c}{\centering madrelingua} \\
-    %\cline{1-1}\cline{2-4}
-\end{tabular}
-Cittadinanza: \textbf{Italiana}
+                \headleft{Skills}
+                \begin{itemize}
+                    \item Python, C, C\#, Java, Javascript, Matlab
+                    \item CSS, html, \LaTeX
+                    \item SQL, MongoDB
+                \end{itemize} 
 
-\headleft{Informazioni Personali}
-\small % To fit more content
-\faBirthdayCake\ 12 - 12 - 1997 \\
-\MVAt\ {\small \href{mailto:\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}{\BaseDecode{Z2FicmllbGUucm9tYW5vMTI4QGdtYWlsLmNvbQ==}}} \\[0.4ex] % Q2hlZXJzIE1hY2hpbmUhIEh1bWFucyB3b24ndCByZWFkIG15IGNvbnRhY3QgaW5mb3MhIQ==
-\faPhone\ \BaseDecode{KzM5IDMyOCAyOTEgMzMyNg==} \\[0.5ex]
-\faGithub\ \href{https://github.com/gaggioaxel}{github.com/gaggioaxel} \\[0.1ex]
-\faLinkedinSquare\ \href{https://it.linkedin.com/in/gabriele-romano-078083219}{linkedin.com/gabriele-romano} \\[0.1ex]
-\faEnvelope\ Via delle Galle 73, Cogorno (GE)
-\normalsize
+                \headleft{\begin{translate}Lingue\end{translate}}
+                \renewcommand{\arraystretch}{1.2} % Adjust the value as needed
+                \begin{tabular}{>{\centering\arraybackslash}m{3em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em} >{\centering\arraybackslash}m{1.5em}}
+                    \multicolumn{1}{c}{\faLanguage} & \multicolumn{1}{c}{\faBook} & \multicolumn{1}{c}{\faPencil} & \multicolumn{1}{c}{\faMicrophone} & \multicolumn{1}{c}{\faHeadphones} \\
+                    \textbf{English} & C1 & B2 & B2 & B2 \\
+                    \begin{translate}\textbf{Italiano}\end{translate} & \multicolumn{4}{c}{\centering \begin{translate} madrelingua \end{translate}} \\
+                    %\cline{1-1}\cline{2-4}
+                \end{tabular}
+                \begin{translate}Cittadinanza: \textbf{Italiana} \end{translate} 
 
-\end{minipage}%
-\kern0.09\textwidth%%Right margin provided explicitly to stretch the colourbox
-}
-\end{minipage}% Right column
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   RIGHT SIDE
-%
-\hskip2.2em% Left margin for the white area
-%
-%
-%
-\begin{minipage}[t]{0.57\textwidth}
-\setlength{\parskip}{0.8ex}% Adds spaces between paragraphs; use \\ to add new lines without this space. Shrink this amount to fit more data vertically
+                \vspace*{2ex}
+                \hspace*{-10pt}
+                \includesvg[scale=0.26]{signature_white.svg}
+                \headleftbelow{\begin{translate}Firma\end{translate}}
 
-\vspace{2ex}
+            \end{minipage}%
+            \kern0.09\textwidth%%Right margin provided explicitly to stretch the colourbox
+        }
+    \end{minipage}% Right column
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %   RIGHT SIDE
+    \hskip2.1em% Left margin for the white area
+    %
+    \begin{minipage}[t]{0.57\textwidth}
+        \setlength{\parskip}{0.8ex}% Adds spaces between paragraphs; use \\ to add new lines without this space. Shrink this amount to fit more data vertically
 
-\headright{Esperienze Universitarie}
+        \vspace{2ex}
 
-\textsc{Paper per Conferenza.} \textit{Università di Genova}  \dates{09.2023} \\
-\smaller{Ho collaborato nella creazione del paper intitolato \textit{"Improving output visualization of an algorithm for the automated detection of the perceived origin of movement"} %
-per la conferenza \href{https://intetain.eai-conferences.org/2023/}{\textcolor{black}{EAI INTETAIN 2023}} in prossima pubblicazione.}
+        \begin{translate}\headright{ Esperienze Universitarie}\end{translate}
 
-\itemspacing % Item spacing -- defined in the preamble
-\textsc{Borsa di Ricerca.} \textit{Università di Genova.} \dates{02/2023--06/2023} \\
-\smaller{ Titolo borsa: \textit{“Prerequisite learning from video lessons”}} \\
-\smaller{Collaborazione in una ricerca incentrata sullo sviluppo di un algoritmo di estrazione del testo presente in video con slide e %
-integrazione con un sistema di analisi semantica al fine di estrarre concetti prerequisiti per la comprensione del video su piattaforma online \href{http://edurell.dibris.unige.it:5000/}{\textcolor{black}{Edurell}}.}
+        \begin{translate}%
+            \textsc{ Paper per Conferenza.} \textit{Università di Genova}   \dates{09.2023} \\
+            \smaller{ Collaborazione nella pubblicazione del paper intitolato \textit{"Improving output visualization of an algorithm for the automated detection of the perceived origin of movement"} %
+            per la conferenza \href{https://intetain.eai-conferences.org/2023/}{\textcolor{black}{EAI INTETAIN 2023}}, in pubblicazione.} %
+        \end{translate}
 
-\headright{Formazione}
+        \itemspacing % Item spacing -- defined in the preamble
+        \begin{translate}
+            \textsc{ Borsa di Ricerca.} \textit{Università di Genova.} \dates{01/2023--04/2023} \\
+            \smaller{ Titolo borsa: \textit{“Prerequisite learning from video lessons”}} \\
+            \smaller{ Collaborazione in una ricerca incentrata sullo sviluppo di un algoritmo, in Python, per l'estrazione del testo presente in video con slide e %
+            integrazione con un sistema di analisi semantica al fine di estrarre concetti prerequisiti per la comprensione del video su piattaforma online \href{http://edurell.dibris.unige.it:5000/}{\textcolor{black}{Edurell}}.}
 
-\textsc{Laurea Magistrale.} \href{https://unige.it/}{\textcolor{black}{\textit{Università di Genova}}}. \dates{09.2021 -- 12.2023} \\
-Corso di \textit{Computer Engineering} \\
-Indirizzo \textit{Artificial Intelligence and Human-centered Computing}
+            \headright{Certificazioni}
 
-\smaller{Voto finale} 110/110. \\
-\smaller{Titolo Tesi}: "\textit{A comparative analysis across algorithmic, machine learning, and visual paradigms for the automatic detection of the perceived origin of full-body human movement}" \href{https://github.com/gaggioaxel/OoM-Thesis}{\textcolor{black}{\faExternalLink}} \\
-\smaller{Interessi principali: 
-    \begin{itemize}
-        \item Interazione tra sistemi multimodali, machine learning e analisi dati per la creazione di dataset, estrazione di features, addestramento e testing di un modello ad apprendimento in aggiunta ad aspetti di visualizzazione.
-        \item Trustworty AI per l'analisi delle vulnerabilità dei modelli basati su intelligenza artificiale e le tematiche riguardanti la privacy dei dati impiegati nel processo di addestramento dei modelli.
-        \item Interazione uomo-macchina per le interfacce, creazione di ontologie per il Web 3.0 e integrazione su database NoSQL.
-    \end{itemize}
-}
+            \textsc{TOEIC.} \textit{Speaking, Writing, Reading and Listening} \dates{09.2021} \\
+            \smaller{Proficiency C1 in Reading e B2 in Speaking, Writing e Listening}
+        \end{translate}
 
-\itemspacing
-\textsc{Laurea.} \textit{\href{https://www.polimi.it/}{\textcolor{black}{Politecnico di Milano}}}. \dates{09.2016 -- 09.2021} \\ Ingegneria Industriale e dell'Informazione. \\ 
-Indirizzo \textit{Informatica}. \\
-\smaller{Voto finale} 84/110. \\
-\smaller{Interessi principali e progetti finali: 
-    \begin{itemize}
-        \item Teoria della Complessità, linguaggi formali, strutture dati, algoritmi di ricerca e ordinamento.\\% 
-        Progetto finale che è consistito nell' \textit{implementazione in linguaggio C di un simulatore di social network che gestisca entità e relazioni tra di esse mediante comandi ad-hoc garantendo la correttezza e l'efficienza nell'identificazione, creazione, eliminazione delle entità e relazioni.}\href{https://github.com/gaggioaxel/Progetto-API-2019}{\textcolor{black}{\faExternalLink}}
-        \item Struttura interna dei calcolatori, paradigmi di programmazione parallela e concorrente. Descrizione architetture hardware tramite linguaggio VHDL e progetto finale.
-        \item Strutturazione, sviluppo, deployment e presentazione di progetto di gruppo con collaborazione tramite piattaforma di versioning.\\ Trasposizione digitale gioco da tavolo Santorini \href{https://github.com/gaggioaxel/SantoriniSchoolProj-Remake}{\textcolor{black}{ \faExternalLink\ }} della Roxley Games. 
-    \end{itemize}
-}
+        \begin{translate}
+            \headright{Studi Accademici}
+            \textsc{Laurea Magistrale.} \href{https://unige.it/}{\textcolor{black}{\textit{Università di Genova}}}. \dates{09.2021 -- 12.2023} \\%
+            Corso di \textit{Computer Engineering} \\%
+            Ramo \textit{Artificial Intelligence and Human-centered Computing}
+        \end{translate}
 
-\itemspacing
-\textsc{Maturità scientifica.} \href{https://www.liceomarconidelpino.it/}{\textcolor{black}{Liceo Scientifico Marconi-Delpino}}. \dates{2011 -- 2016} \\
-\smaller{Diploma con votazione 70/100.} \\
-\smaller{Tesina di presentazione: Analisi del film "Inside Out" \href{https://prezi.com/view/g7EqVksEAx6aKbOHdoOK/}{\textcolor{blue!0!black}{\faExternalLink\ }} della Disney\textsuperscript{\textcopyright} }
+        \begin{translate}
+            \smaller{Voto finale} 110/110. \\
+            \smaller{Titolo Tesi}: "\textit{A comparative analysis across algorithmic, machine learning, and visual paradigms for the automatic detection of the perceived origin of full-body human movement}" \href{https://github.com/gaggioaxel/OoM-Thesis}{\textcolor{black}{\faExternalLink}} \\
+            \smaller{Interessi principali: 
+                \begin{itemize}
+                    \item Interazione tra sistemi multimodali, machine learning e analisi dati per la creazione di dataset, estrazione di features, addestramento e testing di un modello ad apprendimento in aggiunta ad aspetti di visualizzazione.
+                    \item Trustworty AI per l'analisi delle vulnerabilità dei modelli basati su intelligenza artificiale e le tematiche riguardanti la privacy dei dati impiegati nel processo di addestramento dei modelli.
+                    \item Interazione uomo-macchina per le interfacce, creazione di ontologie per il Web 3.0 e integrazione su database NoSQL.
+                \end{itemize}
+            }
+        \end{translate}
 
-\headright{Formazione aggiuntiva}
+        \begin{translate}
+            \itemspacing
+            \textsc{Laurea Triennale.} \href{https://www.polimi.it/}{\textcolor{black}{\textit{\polimi}}}. \dates{09.2016 -- 09.2021} \\ Ingegneria Industriale e dell'Informazione. \\ 
+            Ramo \textit{Informatica}. \\
+            \smaller{Voto finale} 84/110. \\
+            \smaller{Interessi principali e progetti finali: 
+                \begin{itemize}
+                    \item Teoria della complessità, linguaggi formali, strutture dati, algoritmi di ricerca e ordinamento.\\% 
+                    Progetto finale: \textit{implementazione in linguaggio C di un simulatore di social network che gestisca entità e relazioni tra di esse mediante comandi ad-hoc garantendo la correttezza e l'efficienza nell'identificazione, creazione, eliminazione delle entità e relazioni.}\href{https://github.com/gaggioaxel/Progetto-API-2019}{\textcolor{black}{\faExternalLink}}
+                    \item Struttura interna dei calcolatori, paradigmi di programmazione parallela e concorrente. Descrizione architetture hardware tramite linguaggio VHDL e progetto finale.
+                    \item Strutturazione, sviluppo, deployment e presentazione di progetto di gruppo con collaborazione tramite piattaforma di versioning.\\ Trasposizione digitale \href{https://github.com/gaggioaxel/SantoriniSchoolProj-Remake}{\textcolor{black}{ \faExternalLink\ }}del gioco da tavolo \href{https://boardgamegeek.com/boardgame/194655/santorini}{\textcolor{black}{Santorini (2016) della Roxley Games}}. 
+                \end{itemize}
+            }
+        \end{translate}
 
-\textsc{TOEIC.} \textit{Speaking and Writing} \dates{09.2021} \\
-\smaller{Certificato di proficiency B2 in Speaking e Writing}
+        \begin{translate}
+            \itemspacing
+            \textsc{Diploma Scientifico.} \href{https://www.liceomarconidelpino.it/}{\textcolor{black}{Liceo Scientifico Marconi-Delpino}}. \dates{2011 -- 2016} \\
+            \smaller{Votazione finale 70/100.} \\
+            \smaller{Tesina di presentazione: Analisi del film "Inside Out" \href{https://prezi.com/view/g7EqVksEAx6aKbOHdoOK/}{\textcolor{blue!0!black}{\faExternalLink\ }} della Disney\textsuperscript{\textcopyright} }
+        \end{translate}
+        %
+        %
+        \itemorespacing{1.5}
+        %\privacy
+    \end{minipage}
 
-\itemspacing
-\textsc{TOEIC.} \textit{Reading and Listening} \dates{08.2021} \\
-\smaller{Certificato di proficiency C1 in Reading e B2 in Listening}
+    
+    
+    \newpage
 
 
-%\headright{Hobbies}
-%\textit{Cinema:} Grande appassionato della filmografia di Woody Allen
-\end{minipage}
 
+    % Style definitions -- killing the unnecessary space and adding the skips explicitly
+    \setlength{\topskip}{0.1pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\fboxsep}{0pt}
+    \pagestyle{empty}
+    \raggedbottom
+
+    \begin{minipage}[t]{0.34\textwidth} %% Left column -- outer definition
+        %  Left column -- top dark rectangle
+        \colorbox{cvblue!90}{
+            \begin{minipage}[t][285mm][t]{\textwidth}
+                \null\hfill\null
+            \end{minipage}
+        }
+        \vspace{-3mm} % Eliminates the small gap
+        \colorbox{cvblue}{\begin{minipage}[t][9mm][t]{\textwidth}\null\hfill\null\end{minipage}}
+    \end{minipage}    
+
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %   RIGHT SIDE
+    \hskip0.1em% Left margin for the white area
+    %
+    \begin{minipage}[t]{0.57\textwidth}
+        \setlength{\parskip}{0.8ex}% Adds spaces between paragraphs; use \\ to add new lines without this space. Shrink this amount to fit more data vertically
+
+        \vspace{2ex}
+
+        \begin{translate}\headright{ Esperienze Universitarie}\end{translate}
+
+        \begin{translate}%
+            \textsc{ Paper per Conferenza.} \textit{Università di Genova}   \dates{09.2023} \\
+            \smaller{ Collaborazione nella pubblicazione del paper intitolato \textit{"Improving output visualization of an algorithm for the automated detection of the perceived origin of movement"} %
+            per la conferenza \href{https://intetain.eai-conferences.org/2023/}{\textcolor{black}{EAI INTETAIN 2023}}, in pubblicazione.} %
+        \end{translate}
+
+        \itemspacing % Item spacing -- defined in the preamble
+        \begin{translate}
+            \textsc{ Borsa di Ricerca.} \textit{Università di Genova.} \dates{01/2023--04/2023} \\
+            \smaller{ Titolo borsa: \textit{“Prerequisite learning from video lessons”}} \\
+            \smaller{ Collaborazione in una ricerca incentrata sullo sviluppo di un algoritmo, in Python, per l'estrazione del testo presente in video con slide e %
+            integrazione con un sistema di analisi semantica al fine di estrarre concetti prerequisiti per la comprensione del video su piattaforma online \href{http://edurell.dibris.unige.it:5000/}{\textcolor{black}{Edurell}}.}
+
+            \headright{Certificazioni}
+
+            \textsc{TOEIC.} \textit{Speaking, Writing, Reading and Listening} \dates{09.2021} \\
+            \smaller{Proficiency C1 in Reading e B2 in Speaking, Writing e Listening}
+        \end{translate}
+
+        \begin{translate}
+            \headright{Studi Accademici}
+            \textsc{Laurea Magistrale.} \href{https://unige.it/}{\textcolor{black}{\textit{Università di Genova}}}. \dates{09.2021 -- 12.2023} \\%
+            Corso di \textit{Computer Engineering} \\%
+            Ramo \textit{Artificial Intelligence and Human-centered Computing}
+        \end{translate}
+
+        \begin{translate}
+            \smaller{Voto finale} 110/110. \\
+            \smaller{Titolo Tesi}: "\textit{A comparative analysis across algorithmic, machine learning, and visual paradigms for the automatic detection of the perceived origin of full-body human movement}" \href{https://github.com/gaggioaxel/OoM-Thesis}{\textcolor{black}{\faExternalLink}} \\
+            \smaller{Interessi principali: 
+                \begin{itemize}
+                    \item Interazione tra sistemi multimodali, machine learning e analisi dati per la creazione di dataset, estrazione di features, addestramento e testing di un modello ad apprendimento in aggiunta ad aspetti di visualizzazione.
+                    \item Trustworty AI per l'analisi delle vulnerabilità dei modelli basati su intelligenza artificiale e le tematiche riguardanti la privacy dei dati impiegati nel processo di addestramento dei modelli.
+                    \item Interazione uomo-macchina per le interfacce, creazione di ontologie per il Web 3.0 e integrazione su database NoSQL.
+                \end{itemize}
+            }
+        \end{translate}
+
+        \begin{translate}
+            \itemspacing
+            \textsc{Laurea Triennale.} \href{https://www.polimi.it/}{\textcolor{black}{\textit{\polimi}}}. \dates{09.2016 -- 09.2021} \\ Ingegneria Industriale e dell'Informazione. \\ 
+            Ramo \textit{Informatica}. \\
+            \smaller{Voto finale} 84/110. \\
+            \smaller{Interessi principali e progetti finali: 
+                \begin{itemize}
+                    \item Teoria della complessità, linguaggi formali, strutture dati, algoritmi di ricerca e ordinamento.\\% 
+                    Progetto finale: \textit{implementazione in linguaggio C di un simulatore di social network che gestisca entità e relazioni tra di esse mediante comandi ad-hoc garantendo la correttezza e l'efficienza nell'identificazione, creazione, eliminazione delle entità e relazioni.}\href{https://github.com/gaggioaxel/Progetto-API-2019}{\textcolor{black}{\faExternalLink}}
+                    \item Struttura interna dei calcolatori, paradigmi di programmazione parallela e concorrente. Descrizione architetture hardware tramite linguaggio VHDL e progetto finale.
+                    \item Strutturazione, sviluppo, deployment e presentazione di progetto di gruppo con collaborazione tramite piattaforma di versioning.\\ Trasposizione digitale \href{https://github.com/gaggioaxel/SantoriniSchoolProj-Remake}{\textcolor{black}{ \faExternalLink\ }}del gioco da tavolo \href{https://boardgamegeek.com/boardgame/194655/santorini}{\textcolor{black}{Santorini (2016) della Roxley Games}}. 
+                \end{itemize}
+            }
+        \end{translate}
+
+        \begin{translate}
+            \itemspacing
+            \textsc{Diploma Scientifico.} \href{https://www.liceomarconidelpino.it/}{\textcolor{black}{Liceo Scientifico Marconi-Delpino}}. \dates{2011 -- 2016} \\
+            \smaller{Votazione finale 70/100.} \\
+            \smaller{Tesina di presentazione: Analisi del film "Inside Out" \href{https://prezi.com/view/g7EqVksEAx6aKbOHdoOK/}{\textcolor{blue!0!black}{\faExternalLink\ }} della Disney\textsuperscript{\textcopyright} }
+        \end{translate}
+        %
+        %
+        \itemorespacing{1.5}
+        %\privacy
+    \end{minipage}
+
+    \ShellEscape{rm -f totrans.tex translated.tex}
 \end{document}
